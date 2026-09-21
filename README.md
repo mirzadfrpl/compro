@@ -1,46 +1,73 @@
-# Astro Starter Kit: Basics
+# Studio Ara / W4DIGID4W - Corporate Profile
 
-```sh
-npm create astro@latest -- --template basics
+A premium, geometrically-disciplined corporate profile website built with **Astro**, **Tailwind CSS**, and **Keystatic CMS**. Features a bold, minimalist *Ikko Tanaka*-inspired design system, complete with a fully editable Git-based CMS and a custom real-time visual Theme Editor.
+
+## ✨ Key Features
+
+- **Blazing Fast Performance**: Built with Astro in Server-Side Rendering (SSR) mode for instant load times and perfect SEO.
+- **Git-Based CMS (Keystatic)**: Manage all text, content, teams, and portfolios directly through a beautiful admin dashboard without needing an external database.
+- **Custom Theme Editor**: A built-in visual color picker to change the entire website's design system (Background, Main Text, Primary & Secondary Accents) instantly via CSS Variables.
+- **Built-in Security**: The CMS and Theme Editor are locked behind a Basic Authentication middleware to prevent unauthorized access.
+- **Responsive & Accessible**: Mobile-first Tailwind CSS architecture ensuring the geometric layouts scale perfectly on all devices.
+
+## 🛠️ Tech Stack
+
+- [Astro 5](https://astro.build/) - Web Framework (Node.js Adapter)
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Keystatic](https://keystatic.com/) - Git-based CMS for Astro
+- [React](https://reactjs.org/) - Used internally for Keystatic Admin UI
+
+## 🚀 Getting Started
+
+### 1. Installation
+
+Ensure you have Node.js installed, then clone the repository and install dependencies:
+
+```bash
+npm install --legacy-peer-deps
+```
+*(Note: `--legacy-peer-deps` is required to resolve peer dependencies between Astro and older Tailwind plugins if any).*
+
+### 2. Running the Development Server
+
+Start the local development server:
+
+```bash
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The website will be available at [http://localhost:4321](http://localhost:4321).
 
-## 🚀 Project Structure
+## 📝 Content Management (CMS)
 
-Inside of your Astro project, you'll see the following folders and files:
+To edit the content of the website (hero text, portfolios, team members, etc.):
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+1. Navigate to [http://localhost:4321/keystatic](http://localhost:4321/keystatic)
+2. You will be prompted for authentication.
+   - **Username**: `admin`
+   - **Password**: `studioara`
+3. Edit your content! Changes are saved directly to the `src/content/` directory as YAML files.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+*(To change the admin username and password, edit the `src/middleware.ts` file).*
 
-## 🧞 Commands
+## 🎨 Theme Editor
 
-All commands are run from the root of the project, from a terminal:
+To change the website's color scheme visually:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+1. Navigate to [http://localhost:4321/theme](http://localhost:4321/theme).
+2. Authenticate using the same credentials as the CMS.
+3. Use the color pickers to define your Background, Main Text, and Accent colors.
+4. Click **Save Theme Colors** and refresh your homepage to see the global changes instantly applied.
 
-## 👀 Want to learn more?
+## 🌍 Deployment
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Vercel / Standard Hosting
+This project is configured with `@astrojs/node` (`output: 'server'`) and is ready to be deployed to any Node.js compatible hosting environment (VPS, DigitalOcean, Niagahoster).
+
+If you are deploying to a serverless environment like **Vercel** and want to edit content directly on the live site:
+1. You must change the Keystatic storage mode in `keystatic.config.ts` from `local` to `github`.
+2. Connect it to a GitHub App to allow Keystatic to push commits directly to your repository.
+3. Switch the Astro adapter in `astro.config.mjs` to `@astrojs/vercel`.
+
+---
+*Designed with precision.*
