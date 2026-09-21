@@ -1,0 +1,16 @@
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main blob -->
+  <path fill="#e54b3c" d="M377.5,334.5Q326,419,235.5,410Q145,401,92,325.5Q39,250,91,173.5Q143,97,236,89.5Q329,82,379,166Q429,250,377.5,334.5Z" />
+  <!-- Splatters (droplets) -->
+  <circle cx="420" cy="120" r="15" fill="#f1c40f" />
+  <circle cx="450" cy="180" r="8" fill="#e54b3c" />
+  <circle cx="80" cy="400" r="20" fill="#2c3e50" />
+  <circle cx="120" cy="450" r="10" fill="#f1c40f" />
+  <circle cx="50" cy="100" r="12" fill="#e54b3c" />
+  <circle cx="250" cy="30" r="18" fill="#2c3e50" />
+  
+  <!-- Additional jagged splash lines -->
+  <path fill="#f1c40f" d="M230,90 L260,20 L270,70 Z" />
+  <path fill="#2c3e50" d="M90,320 L20,380 L60,350 Z" />
+  <path fill="#e54b3c" d="M370,330 L460,400 L410,380 Z" />
+</svg>

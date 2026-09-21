@@ -1,23 +1,203 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const siteSettings = await reader.singletons.siteSettings.read();
+const brandName = siteSettings?.brandName || 'Studio Ara';
+const footerText = siteSettings?.footerText || '© 2026 Studio Ara. All rights reserved.';
+const colorPaper = siteSettings?.colorPaper || '#ecf0f1';
+const colorIndigo = siteSettings?.colorIndigo || '#2c3e50';
+const colorVermilion = siteSettings?.colorVermilion || '#e54b3c';
+const colorGold = siteSettings?.colorGold || '#f1c40f';
+
+const hexToRgb = (hex: string) => {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16) || 0;
+  const g = parseInt(h.substring(2, 4), 16) || 0;
+  const b = parseInt(h.substring(4, 6), 16) || 0;
+  return `${r} ${g} ${b}`;
+};
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title} | {brandName.toUpperCase()}</title>
+    <!-- Using Archivo for distinctive grotesk look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style is:inline set:html={`
+      :root {
+        --color-paper: ${hexToRgb(colorPaper)};
+        --color-indigo: ${hexToRgb(colorIndigo)};
+        --color-vermilion: ${hexToRgb(colorVermilion)};
+        --color-gold: ${hexToRgb(colorGold)};
+      }
+    `}></style>
+
+    <style is:global>
+      @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-100%); }
+      }
+    </style>
+  </head>
+  <body class="bg-paper text-indigo font-sans selection:bg-vermilion selection:text-paper min-h-screen overflow-x-hidden flex flex-col md:flex-row">
+    
+    <!-- Left Column: Typography & Grid Data -->
+    <main class="w-full md:w-1/2 min-h-screen border-r border-indigo/20 flex flex-col relative bg-paper z-10">
+      
+      <!-- Top nav row -->
+      <header class="flex items-stretch border-b border-indigo/20 h-20 shrink-0">
+        <!-- Logo cell -->
+        <a href="/" class="w-1/3 md:w-1/4 shrink-0 flex items-center px-6 md:px-8 border-r border-indigo/20 hover:text-vermilion transition-colors cursor-pointer">
+           <h1 class="text-xl md:text-2xl font-bold tracking-tight uppercase">{brandName}</h1>
+        </a>
+        <!-- Spacer cell for desktop -->
+        <div class="hidden md:block flex-grow"></div>
+        <!-- Hamburger for mobile -->
+        <div class="md:hidden flex-grow flex justify-end items-center px-6">
+          <button id="mobile-menu-btn" class="w-10 h-10 flex flex-col justify-center items-end gap-2 focus:outline-none z-50 relative">
+            <span class="w-8 h-0.5 bg-indigo transition-transform duration-300 origin-right" id="bar1"></span>
+            <span class="w-6 h-0.5 bg-indigo transition-opacity duration-300" id="bar2"></span>
+            <span class="w-8 h-0.5 bg-indigo transition-transform duration-300 origin-right" id="bar3"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Mobile Menu Overlay -->
+      <div id="mobile-menu" class="fixed inset-0 bg-paper z-50 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] md:hidden">
+        
+        <!-- Close Button -->
+        <button id="close-menu-btn" class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-indigo hover:text-vermilion transition-colors focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <nav class="flex flex-col items-center gap-8 text-3xl font-black uppercase tracking-widest text-indigo">
+          <a href="/profile" class="hover:text-vermilion transition-colors">Profile</a>
+          <a href="/works" class="hover:text-vermilion transition-colors">Works</a>
+          <a href="/services" class="hover:text-vermilion transition-colors">Services</a>
+          <a href="/team" class="hover:text-vermilion transition-colors">Team</a>
+          <a href="/contact" class="hover:text-vermilion transition-colors">Contact</a>
+        </nav>
+      </div>
+
+      <slot />
+
+      <!-- Mobile Footer Links -->
+      <footer class="md:hidden flex flex-wrap items-center justify-center border-t border-indigo/20 p-6 gap-3 text-xs sm:text-sm font-semibold uppercase tracking-widest mt-auto">
+         <a href="/profile" class="hover:text-vermilion transition-colors">Profile</a>
+         <span class="text-indigo/30">|</span>
+         <a href="/works" class="hover:text-vermilion transition-colors">Works</a>
+         <span class="text-indigo/30">|</span>
+         <a href="/services" class="hover:text-vermilion transition-colors">Services</a>
+         <span class="text-indigo/30">|</span>
+         <a href="/team" class="hover:text-vermilion transition-colors">Team</a>
+         <span class="text-indigo/30">|</span>
+         <a href="/contact" class="hover:text-vermilion transition-colors">Contact</a>
+      </footer>
+
+    </main>
+
+    <!-- Right Column: Visual Art / Navigation -->
+    <aside class="w-full md:w-1/2 min-h-screen flex flex-col items-center justify-between bg-paper pt-20 md:pt-0 sticky top-0">
+      
+      <!-- Top Navigation Row -->
+      <nav class="absolute top-0 left-0 w-full h-20 px-6 md:px-12 flex justify-end items-center gap-6 md:gap-10 uppercase font-semibold tracking-widest text-sm z-20 border-b border-indigo/20 md:border-b-0 md:bg-transparent bg-paper">
+        <a href="/profile" class="hover:text-vermilion transition-colors relative group">
+          Profile
+          <span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-vermilion transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/works" class="hover:text-vermilion transition-colors relative group">
+          Works
+          <span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-vermilion transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/services" class="hover:text-vermilion transition-colors relative group hidden sm:block">
+          Services
+          <span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-vermilion transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/team" class="hover:text-vermilion transition-colors relative group hidden sm:block">
+          Team
+          <span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-vermilion transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/contact" class="hover:text-vermilion transition-colors relative group">
+          Contact
+          <span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-vermilion transition-all duration-300 group-hover:w-full"></span>
+        </a>
+      </nav>
+
+      <slot name="right" />
+
+      <!-- Footer -->
+      <footer class="w-full px-6 md:px-8 lg:px-12 py-4 min-h-[5rem] flex flex-wrap xl:flex-nowrap justify-between items-center text-xs lg:text-sm font-semibold uppercase tracking-wider absolute bottom-0 left-0 bg-paper/90 backdrop-blur-sm z-10 border-t border-indigo/20 md:border-t-0 md:bg-transparent md:backdrop-blur-none gap-y-4 gap-x-2">
+        <div class="hidden md:flex flex-wrap items-center gap-1.5 lg:gap-3 flex-1">
+          <a href="/profile" class="hover:text-vermilion transition-colors whitespace-nowrap">Profile</a>
+          <span class="text-indigo/30">|</span>
+          <a href="/works" class="hover:text-vermilion transition-colors whitespace-nowrap">Works</a>
+          <span class="text-indigo/30">|</span>
+          <a href="/services" class="hover:text-vermilion transition-colors whitespace-nowrap">Services</a>
+          <span class="text-indigo/30">|</span>
+          <a href="/team" class="hover:text-vermilion transition-colors whitespace-nowrap">Team</a>
+          <span class="text-indigo/30">|</span>
+          <a href="/contact" class="hover:text-vermilion transition-colors whitespace-nowrap">Contact</a>
+        </div>
+        
+        <div class="flex items-center justify-between w-full md:w-auto shrink-0 gap-4 lg:gap-10">
+          <p class="whitespace-nowrap opacity-80 text-[10px] lg:text-sm">{footerText}</p>
+          <div class="w-8 h-8 rounded-full bg-indigo relative overflow-hidden flex items-center justify-center hover:rotate-180 transition-transform duration-700 cursor-pointer shadow-md shrink-0 group">
+             <div class="w-4 h-4 bg-paper absolute bottom-0 left-0 group-hover:bg-vermilion transition-colors duration-300"></div>
+          </div>
+        </div>
+      </footer>
+
+    </aside>
+    
+    <script>
+      const btn = document.getElementById('mobile-menu-btn');
+      const closeBtn = document.getElementById('close-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      const bar1 = document.getElementById('bar1');
+      const bar2 = document.getElementById('bar2');
+      const bar3 = document.getElementById('bar3');
+
+      if (btn && menu && bar1 && bar2 && bar3) {
+        let isOpen = false;
+
+        const toggleMenu = () => {
+          isOpen = !isOpen;
+          if (isOpen) {
+            menu.classList.remove('translate-x-full');
+            menu.classList.add('translate-x-0');
+            // Animate hamburger to X
+            bar1.classList.add('-rotate-45', '-translate-x-1');
+            bar2.classList.add('opacity-0');
+            bar3.classList.add('rotate-45', '-translate-x-1');
+          } else {
+            menu.classList.remove('translate-x-0');
+            menu.classList.add('translate-x-full');
+            // Revert hamburger
+            bar1.classList.remove('-rotate-45', '-translate-x-1');
+            bar2.classList.remove('opacity-0');
+            bar3.classList.remove('rotate-45', '-translate-x-1');
+          }
+        };
+
+        btn.addEventListener('click', toggleMenu);
+        if (closeBtn) {
+          closeBtn.addEventListener('click', toggleMenu);
+        }
+      }
+    </script>
+  </body>
+</html>

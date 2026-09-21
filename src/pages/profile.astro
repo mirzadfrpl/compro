@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const profileData = await reader.singletons.profile.read();
+
+const title = profileData?.title || 'Profile';
+const subtitle = profileData?.subtitle || 'The Studio Ara Manifesto';
+const content = profileData?.content || `Founded in 2026, Studio Ara is a digital design practice rooted in the principles of geometric discipline. We believe that constraints breed creativity, and that true elegance is found in the absolute minimum required to convey a message.
+
+Our approach strips away the superfluous. No ambient shadows, no decorative gradients, no meaningless ornament. Every line, every shape, and every color plane must earn its place on the canvas.
+
+We partner with visionary brands who share our commitment to clarity, impact, and timeless structural aesthetics.`;
+---
+
+<Layout title={title}>
+  
+  <!-- Page Header -->
+  <div class="flex items-stretch border-b border-indigo/20 relative">
+    <div class="w-1/4 shrink-0 border-r border-indigo/20 hidden md:block"></div>
+    <div class="p-6 md:p-12 md:pl-12 w-full">
+      <h2 class="text-4xl md:text-5xl font-bold uppercase text-vermilion mb-2">{title}</h2>
+      <p class="text-lg font-medium">{subtitle}</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <section class="flex items-stretch flex-grow">
+    <div class="w-1/4 shrink-0 flex items-start justify-center border-r border-indigo/20 py-8">
+       <div class="flex items-center gap-1">
+         <div class="w-3 h-3 bg-indigo"></div>
+         <div class="w-3 h-3 bg-indigo"></div>
+         <div class="w-3 h-3 bg-indigo"></div>
+       </div>
+    </div>
+    <div class="p-6 md:p-8 w-full max-w-2xl">
+      <div class="space-y-6 text-base md:text-lg font-medium leading-relaxed">
+        {content.split('\n').filter(p => p.trim() !== '').map(p => (
+          <p>{p}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Slot for Right Column -->
+  <Fragment slot="right">
+    <div class="relative w-full h-full flex flex-col items-center justify-center p-8">
+       <!-- CSS Geometric Art for Profile -->
+       <div class="w-64 h-64 bg-indigo relative flex items-center justify-center hover:scale-105 transition-transform duration-700">
+         <div class="absolute top-0 left-0 w-32 h-32 bg-vermilion rounded-br-full"></div>
+         <div class="absolute bottom-0 right-0 w-32 h-32 bg-gold rounded-tl-full"></div>
+         <div class="absolute inset-8 bg-paper rounded-full flex items-center justify-center">
+            <span class="font-bold text-4xl text-indigo tracking-tighter">ARA</span>
+         </div>
+       </div>
+    </div>
+  </Fragment>
+
+</Layout>

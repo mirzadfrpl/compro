@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const servicesData = await reader.singletons.services.read();
+
+const title = servicesData?.title || 'Services';
+const subtitle = servicesData?.subtitle || 'What We Do Best';
+const serviceList = servicesData?.serviceList?.length ? servicesData.serviceList : [
+  { id: '01', title: 'Brand Identity', description: 'We craft logomarks, typography systems, and color palettes that form the unmistakable foundation of your brand.' },
+  { id: '02', title: 'Digital Platforms', description: 'From corporate sites to complex web applications, we engineer fast, accessible, and striking digital experiences.' },
+  { id: '03', title: 'Design Systems', description: 'We systematize your visual language into robust UI kits and component libraries, ensuring scale without fragmentation.' },
+  { id: '04', title: 'Consultation', description: 'Strategic advisory on digital transformation, accessibility compliance, and visual strategy.' }
+];
+---
+
+<Layout title={title}>
+  
+  <div class="flex items-stretch border-b border-indigo/20 relative">
+    <div class="w-1/4 shrink-0 border-r border-indigo/20 hidden md:block"></div>
+    <div class="p-6 md:p-12 md:pl-12 w-full">
+      <h2 class="text-4xl md:text-5xl font-bold uppercase text-indigo mb-2">{title}</h2>
+      <p class="text-lg font-medium">{subtitle}</p>
+    </div>
+  </div>
+
+  <section class="flex items-stretch flex-grow">
+    <div class="w-1/4 shrink-0 flex items-start justify-center border-r border-indigo/20 py-8">
+       <div class="flex flex-col items-center gap-2">
+         <div class="w-4 h-4 bg-indigo"></div>
+         <div class="w-4 h-4 bg-vermilion"></div>
+         <div class="w-4 h-4 bg-gold"></div>
+       </div>
+    </div>
+    <div class="w-full flex flex-col">
+      {serviceList.map((service, index) => {
+        const colors = ['text-vermilion', 'text-gold', 'text-indigo', 'text-indigo'];
+        const color = colors[index % colors.length];
+        const border = index !== serviceList.length - 1 ? 'border-b border-indigo/20' : '';
+        return (
+          <div class={`p-6 md:p-8 ${border}`}>
+            <h3 class={`text-2xl font-bold uppercase mb-2 ${color}`}>{service.title}</h3>
+            <p class="font-medium text-base md:text-lg max-w-md">{service.description}</p>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <Fragment slot="right">
+    <div class="relative w-full h-full min-h-screen flex flex-col items-center justify-center p-8 bg-paper text-indigo">
+       <div class="w-full max-w-md p-12 border-4 border-indigo relative group">
+         <div class="absolute -top-6 -left-6 w-12 h-12 bg-vermilion rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+         <div class="absolute -bottom-6 -right-6 w-12 h-12 bg-gold group-hover:-rotate-45 transition-transform duration-500"></div>
+         <h3 class="text-4xl font-bold uppercase tracking-tighter leading-none mb-4">Precision<br/>Meets<br/>Purpose.</h3>
+         <div class="w-full h-2 bg-indigo"></div>
+       </div>
+    </div>
+  </Fragment>
+
+</Layout>

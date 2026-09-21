@@ -1,0 +1,109 @@
+---
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const siteSettings = await reader.singletons.siteSettings.read();
+const brandName = siteSettings?.brandName || 'Studio Ara';
+const footerText = siteSettings?.footerText || '© 2026 Studio Ara. All rights reserved.';
+const colorPaper = siteSettings?.colorPaper || '#ecf0f1';
+const colorIndigo = siteSettings?.colorIndigo || '#2c3e50';
+const colorVermilion = siteSettings?.colorVermilion || '#e54b3c';
+const colorGold = siteSettings?.colorGold || '#f1c40f';
+
+const hexToRgb = (hex: string) => {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16) || 0;
+  const g = parseInt(h.substring(2, 4), 16) || 0;
+  const b = parseInt(h.substring(4, 6), 16) || 0;
+  return `${r} ${g} ${b}`;
+};
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{brandName}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style is:inline set:html={`
+      :root {
+        --color-paper: ${hexToRgb(colorPaper)};
+        --color-indigo: ${hexToRgb(colorIndigo)};
+        --color-vermilion: ${hexToRgb(colorVermilion)};
+        --color-gold: ${hexToRgb(colorGold)};
+      }
+    `}></style>
+
+    <style is:global>
+      @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-100%); }
+      }
+      .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .reveal-on-scroll.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .delay-100 { transition-delay: 100ms; }
+      .delay-200 { transition-delay: 200ms; }
+      .delay-300 { transition-delay: 300ms; }
+    </style>
+  </head>
+  <body class="bg-paper text-indigo font-sans selection:bg-vermilion selection:text-paper min-h-screen overflow-x-hidden flex flex-col">
+    <!-- Standard Navbar -->
+    <header class="fixed top-0 left-0 w-full h-20 bg-paper/90 backdrop-blur-md z-50 border-b border-indigo/10 flex items-center justify-between px-6 md:px-12">
+      <a href="/" class="text-xl md:text-2xl font-black tracking-tight hover:text-vermilion transition-colors uppercase">{brandName}</a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest">
+        <a href="/profile" class="hover:text-vermilion transition-colors">Profile</a>
+        <a href="/works" class="hover:text-vermilion transition-colors">Works</a>
+        <a href="/services" class="hover:text-vermilion transition-colors">Services</a>
+        <a href="/team" class="hover:text-vermilion transition-colors">Team</a>
+        <a href="/contact" class="hover:text-vermilion transition-colors">Contact</a>
+      </nav>
+      <button class="md:hidden flex flex-col gap-1.5 focus:outline-none">
+         <span class="w-6 h-0.5 bg-indigo"></span>
+         <span class="w-6 h-0.5 bg-indigo"></span>
+         <span class="w-6 h-0.5 bg-indigo"></span>
+      </button>
+    </header>
+    
+    <main class="flex-grow pt-20">
+      <slot />
+    </main>
+    
+    <!-- Standard Footer -->
+    <footer class="w-full bg-indigo text-paper py-12 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-2xl font-black tracking-tighter uppercase">{brandName.split(' ').pop() || brandName}</div>
+      <div class="flex gap-6 text-xs font-bold uppercase tracking-widest text-paper/60">
+         <a href="/profile" class="hover:text-gold transition-colors">Profile</a>
+         <a href="/works" class="hover:text-gold transition-colors">Works</a>
+         <a href="/contact" class="hover:text-gold transition-colors">Contact</a>
+      </div>
+      <div class="text-xs font-medium opacity-50">{footerText}</div>
+    </footer>
+
+    <!-- Global Animation Script -->
+    <script>
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+      document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
+        observer.observe(el);
+      });
+    </script>
+  </body>
+</html>

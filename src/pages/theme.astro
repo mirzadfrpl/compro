@@ -1,0 +1,122 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+import * as yaml from 'js-yaml';
+
+// Read current settings
+const settingsPath = path.resolve(process.cwd(), 'src/content/settings/content.yaml');
+let settings: any = {};
+if (fs.existsSync(settingsPath)) {
+  settings = yaml.load(fs.readFileSync(settingsPath, 'utf8')) || {};
+}
+
+// Handle Form Submission
+if (Astro.request.method === 'POST') {
+  try {
+    const data = await Astro.request.formData();
+    settings.colorPaper = data.get('colorPaper') || settings.colorPaper;
+    settings.colorIndigo = data.get('colorIndigo') || settings.colorIndigo;
+    settings.colorVermilion = data.get('colorVermilion') || settings.colorVermilion;
+    settings.colorGold = data.get('colorGold') || settings.colorGold;
+    
+    // Write back to YAML
+    fs.writeFileSync(settingsPath, yaml.dump(settings));
+    // Redirect to same page to show success
+    return Astro.redirect('/theme?success=true');
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Default colors if not set
+const colorPaper = settings.colorPaper || '#ecf0f1';
+const colorIndigo = settings.colorIndigo || '#2c3e50';
+const colorVermilion = settings.colorVermilion || '#e54b3c';
+const colorGold = settings.colorGold || '#f1c40f';
+
+const isSuccess = Astro.url.searchParams.has('success');
+---
+
+<Layout title="Theme Editor">
+  
+  <div class="flex items-stretch border-b border-indigo/20 relative">
+    <div class="w-1/4 shrink-0 border-r border-indigo/20 hidden md:block"></div>
+    <div class="p-6 md:p-12 md:pl-12 w-full">
+      <h2 class="text-4xl md:text-5xl font-bold uppercase text-vermilion mb-2">Theme Editor</h2>
+      <p class="text-lg font-medium">Custom Color Picker</p>
+    </div>
+  </div>
+
+  <section class="flex items-stretch flex-grow">
+    <div class="w-1/4 shrink-0 border-r border-indigo/20 py-8 hidden md:block"></div>
+    <div class="p-6 md:p-12 w-full max-w-3xl">
+      
+      {isSuccess && (
+        <div class="mb-8 p-4 bg-green-100 border border-green-500 text-green-800 font-bold uppercase tracking-widest text-sm flex items-center justify-between">
+          <span>Theme updated successfully!</span>
+          <a href="/" class="underline text-green-700 hover:text-green-900">View Site</a>
+        </div>
+      )}
+
+      <form method="POST" class="space-y-10">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          
+          <!-- Background Color -->
+          <div class="p-6 border border-indigo/20 hover:border-indigo transition-colors group">
+            <label class="block text-xs font-bold uppercase tracking-widest text-indigo/70 mb-4">Background (Paper)</label>
+            <div class="flex items-center gap-4">
+              <input type="color" name="colorPaper" value={colorPaper} class="w-16 h-16 cursor-pointer bg-transparent border-none p-0" />
+              <div class="text-sm font-medium opacity-80">{colorPaper}</div>
+            </div>
+            <p class="mt-4 text-xs font-medium opacity-60">The primary background color of the website.</p>
+          </div>
+
+          <!-- Main Text Color -->
+          <div class="p-6 border border-indigo/20 hover:border-indigo transition-colors group">
+            <label class="block text-xs font-bold uppercase tracking-widest text-indigo/70 mb-4">Main Text & Dark (Indigo)</label>
+            <div class="flex items-center gap-4">
+              <input type="color" name="colorIndigo" value={colorIndigo} class="w-16 h-16 cursor-pointer bg-transparent border-none p-0" />
+              <div class="text-sm font-medium opacity-80">{colorIndigo}</div>
+            </div>
+            <p class="mt-4 text-xs font-medium opacity-60">The primary text and dark accent color.</p>
+          </div>
+
+          <!-- Primary Accent -->
+          <div class="p-6 border border-indigo/20 hover:border-indigo transition-colors group">
+            <label class="block text-xs font-bold uppercase tracking-widest text-indigo/70 mb-4">Primary Accent (Vermilion)</label>
+            <div class="flex items-center gap-4">
+              <input type="color" name="colorVermilion" value={colorVermilion} class="w-16 h-16 cursor-pointer bg-transparent border-none p-0" />
+              <div class="text-sm font-medium opacity-80">{colorVermilion}</div>
+            </div>
+            <p class="mt-4 text-xs font-medium opacity-60">Used for highlights, hover effects, and call-to-actions.</p>
+          </div>
+
+          <!-- Secondary Accent -->
+          <div class="p-6 border border-indigo/20 hover:border-indigo transition-colors group">
+            <label class="block text-xs font-bold uppercase tracking-widest text-indigo/70 mb-4">Secondary Accent (Gold)</label>
+            <div class="flex items-center gap-4">
+              <input type="color" name="colorGold" value={colorGold} class="w-16 h-16 cursor-pointer bg-transparent border-none p-0" />
+              <div class="text-sm font-medium opacity-80">{colorGold}</div>
+            </div>
+            <p class="mt-4 text-xs font-medium opacity-60">Used for secondary highlights and alternating items.</p>
+          </div>
+
+        </div>
+
+        <div class="flex gap-4 pt-8 border-t border-indigo/10">
+          <button type="submit" class="px-8 py-4 bg-vermilion text-paper text-sm font-bold uppercase tracking-widest hover:bg-gold hover:text-indigo transition-colors shadow-lg">
+            Save Theme Colors
+          </button>
+          <a href="/keystatic" class="px-8 py-4 bg-transparent border border-indigo/30 text-indigo text-sm font-bold uppercase tracking-widest hover:bg-indigo hover:text-paper transition-colors">
+            Back to CMS
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+</Layout>

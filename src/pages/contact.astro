@@ -1,0 +1,98 @@
+---
+import BlankLayout from '../layouts/BlankLayout.astro';
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const contactData = await reader.singletons.contact.read();
+
+const title = contactData?.title || `Let's Build <br/> Something <br/> Extraordinary`;
+const subtitle = contactData?.subtitle || 'Whether you have a fully formed brief or just a raw idea, we are ready to engineer the structural aesthetics of your next big move.';
+const generalEmail = contactData?.generalEmail || 'hello@studioara.dummy';
+const careersEmail = contactData?.careersEmail || 'jobs@studioara.dummy';
+const address = contactData?.address || `123 Geometric Ave\nDesign District\nTokyo, JP 100-0001`;
+---
+
+<BlankLayout>
+  
+  <!-- Contact Hero -->
+  <section class="relative w-full pt-32 pb-20 px-6 md:px-12 bg-paper border-b border-indigo/10 reveal-on-scroll animate-in">
+    <div class="max-w-6xl mx-auto">
+      <div class="w-8 h-8 bg-vermilion mb-10 reveal-on-scroll delay-100"></div>
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.9] text-indigo mb-8 reveal-on-scroll delay-200" set:html={title}>
+      </h1>
+      <p class="text-xl md:text-2xl font-medium text-indigo/70 max-w-2xl reveal-on-scroll delay-300">
+        {subtitle}
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Form & Info Split -->
+  <section class="w-full flex flex-col lg:flex-row items-stretch border-b border-indigo/10">
+    
+    <!-- Left: Contact Form -->
+    <div class="w-full lg:w-1/2 p-8 md:p-16 lg:p-24 bg-white flex flex-col justify-center reveal-on-scroll">
+      <h2 class="text-2xl font-bold uppercase tracking-widest mb-12">Start a Conversation</h2>
+      
+      <form class="flex flex-col gap-10 w-full max-w-lg">
+        <div class="relative group">
+          <input type="text" id="name" class="w-full bg-transparent border-b border-indigo/20 py-4 outline-none focus:border-indigo transition-colors peer placeholder-transparent text-lg font-medium" placeholder="Name" />
+          <label for="name" class="absolute left-0 -top-3.5 text-xs font-bold uppercase tracking-widest text-indigo/50 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-indigo">Your Name</label>
+        </div>
+        
+        <div class="relative group">
+          <input type="email" id="email" class="w-full bg-transparent border-b border-indigo/20 py-4 outline-none focus:border-indigo transition-colors peer placeholder-transparent text-lg font-medium" placeholder="Email" />
+          <label for="email" class="absolute left-0 -top-3.5 text-xs font-bold uppercase tracking-widest text-indigo/50 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-indigo">Email Address</label>
+        </div>
+        
+        <div class="relative group">
+          <textarea id="message" rows="4" class="w-full bg-transparent border-b border-indigo/20 py-4 outline-none focus:border-indigo transition-colors peer placeholder-transparent text-lg font-medium resize-none" placeholder="Message"></textarea>
+          <label for="message" class="absolute left-0 -top-3.5 text-xs font-bold uppercase tracking-widest text-indigo/50 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-indigo">Project Details</label>
+        </div>
+        
+        <button type="button" class="mt-4 px-8 py-5 bg-indigo text-paper text-sm font-bold uppercase tracking-widest hover:bg-vermilion transition-colors self-start shadow-xl">
+          Submit Inquiry
+        </button>
+      </form>
+    </div>
+
+    <!-- Right: Contact Information -->
+    <div class="w-full lg:w-1/2 p-8 md:p-16 lg:p-24 bg-indigo text-paper flex flex-col justify-center border-l lg:border-indigo/10 reveal-on-scroll delay-200">
+      
+      <div class="mb-16">
+        <h3 class="text-xs font-bold uppercase tracking-widest mb-4 opacity-50">General Inquiries</h3>
+        <a href={`mailto:${generalEmail}`} class="text-3xl md:text-4xl font-bold uppercase hover:text-vermilion transition-colors block">
+          {generalEmail}
+        </a>
+      </div>
+
+      <div class="mb-16">
+        <h3 class="text-xs font-bold uppercase tracking-widest mb-4 opacity-50">Careers & Opportunities</h3>
+        <a href={`mailto:${careersEmail}`} class="text-2xl md:text-3xl font-bold uppercase hover:text-gold transition-colors block">
+          {careersEmail}
+        </a>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-widest mb-4 opacity-50">Global Headquarters</h3>
+        <p class="text-xl md:text-2xl font-medium leading-relaxed max-w-sm">
+          {address.split('\n').filter(l => l.trim() !== '').map(line => (
+            <>{line}<br/></>
+          ))}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Large Visual Footer Banner -->
+  <section class="w-full relative h-[40vh] overflow-hidden bg-gold flex items-center justify-center reveal-on-scroll">
+    <div class="absolute inset-0 bg-[url('/assets/grid.svg')] bg-repeat opacity-20 mix-blend-multiply"></div>
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+       <h2 class="text-[10rem] md:text-[20rem] font-black uppercase text-paper mix-blend-overlay opacity-50 tracking-tighter leading-none">MAJOT</h2>
+    </div>
+    <!-- Simple overlapping shapes -->
+    <div class="w-32 h-32 md:w-64 md:h-64 rounded-full bg-vermilion mix-blend-multiply absolute -bottom-10 -left-10"></div>
+    <div class="w-48 h-48 md:w-96 md:h-96 bg-indigo mix-blend-multiply absolute -top-20 -right-20 rounded-bl-full"></div>
+  </section>
+
+</BlankLayout>

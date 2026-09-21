@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const worksData = await reader.collections.works.all();
+const sortedWorks = worksData.sort((a, b) => b.entry.year.localeCompare(a.entry.year));
+
+// Fallback data if collection is empty
+const works = sortedWorks.length > 0 ? sortedWorks.map(w => ({
+  title: w.entry.title,
+  year: w.entry.year,
+  category: w.entry.category || w.entry.client,
+})) : [
+  { title: 'OmniCorp Identity', year: '2026', category: 'Global rebranding and digital system design.' },
+  { title: 'Stark Terminal', year: '2025', category: 'HUD interface and motion language.' },
+  { title: 'Acme Web Platform', year: '2024', category: 'E-commerce architecture and UI kit.' }
+];
+---
+
+<Layout title="Works">
+  
+  <div class="flex items-stretch border-b border-indigo/20 relative">
+    <div class="w-1/4 shrink-0 border-r border-indigo/20 hidden md:block"></div>
+    <div class="p-6 md:p-12 md:pl-12 w-full">
+      <h2 class="text-4xl md:text-5xl font-bold uppercase text-gold mb-2">Selected Works</h2>
+      <p class="text-lg font-medium">Case Studies & Portfolios</p>
+    </div>
+  </div>
+
+  <section class="flex items-stretch flex-grow">
+    <div class="w-1/4 shrink-0 border-r border-indigo/20"></div>
+    <div class="w-full flex flex-col">
+      {works.map((work, index) => {
+        const hoverClasses = ['hover:bg-vermilion hover:text-paper', 'hover:bg-indigo hover:text-paper', 'hover:bg-gold hover:text-indigo'];
+        const hoverClass = hoverClasses[index % hoverClasses.length];
+        const borderClass = index !== works.length - 1 ? 'border-b border-indigo/20' : '';
+        return (
+          <a href="#" class={`group block p-6 md:p-8 transition-colors duration-300 ${hoverClass} ${borderClass}`}>
+            <div class="flex justify-between items-baseline mb-2">
+              <h3 class="text-2xl font-bold uppercase">{work.title}</h3>
+              <span class="text-sm font-semibold tracking-widest uppercase">{work.year}</span>
+            </div>
+            <p class="font-medium opacity-80 group-hover:opacity-100">{work.category}</p>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Slot for Right Column -->
+  <Fragment slot="right">
+    <div class="relative w-full h-full flex flex-col items-center justify-center p-8">
+       <div class="w-full max-w-sm aspect-square grid grid-cols-2 grid-rows-2 gap-4">
+         <div class="bg-indigo hover:scale-95 transition-transform duration-500"></div>
+         <div class="bg-vermilion rounded-tr-full hover:scale-95 transition-transform duration-500"></div>
+         <div class="bg-gold rounded-bl-full hover:scale-95 transition-transform duration-500"></div>
+         <div class="bg-indigo rounded-full hover:scale-95 transition-transform duration-500"></div>
+       </div>
+    </div>
+  </Fragment>
+
+</Layout>
