@@ -1,4 +1,4 @@
-# Studio Ara / W4DIGID4W - Corporate Profile
+# W4DIGID4W - Corporate Profile
 
 A premium, geometrically-disciplined corporate profile website built with **Astro**, **Tailwind CSS**, and **Keystatic CMS**. Features a bold, minimalist *Ikko Tanaka*-inspired design system, complete with a fully editable Git-based CMS and a custom real-time visual Theme Editor.
 
